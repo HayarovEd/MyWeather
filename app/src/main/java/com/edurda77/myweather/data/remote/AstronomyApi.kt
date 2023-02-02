@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface AstronomyApi {
     @GET("astronomy")
     suspend fun getAstronomy(
-        @Query("api_key") key : String = API_IP_GEOLOCATION,
+        @Query("apiKey") key : String = API_IP_GEOLOCATION,
         @Query("long") longitude : Double,
         @Query("lat") latitude : Double
     ) : AstronomyDto

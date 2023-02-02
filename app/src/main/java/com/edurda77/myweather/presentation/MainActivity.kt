@@ -53,20 +53,26 @@ class MainActivity : AppCompatActivity() {
                 is MainActivityState.Loading -> {
 
                 }
-                is MainActivityState.Success -> {
-                    binding.longitudeTv.text = "Долгота ${result.longitude}"
-                    binding.latitudeTv.text = "Широта ${result.latitude}"
-                    binding.altitudeTv.text = "Высота ${result.altitude}"
-                    binding.accuracyTv.text = "Точность ${result.accuracy}"
-                    binding.providerTv.text = "Провайдер ${result.provider}"
+                is MainActivityState.SuccessLocationAndWeather -> {
+                    binding.locationData.longitudeTv.text = "Долгота ${result.longitude}"
+                    binding.locationData.latitudeTv.text = "Широта ${result.latitude}"
+                    binding.locationData.altitudeTv.text = "Высота ${result.altitude}"
+                    binding.locationData.accuracyTv.text = "Точность ${result.accuracy}"
+                    binding.locationData.providerTv.text = "Провайдер ${result.provider}"
+                    binding.weatherData.temperatureTv.text =
+                        "Температура ${result.weather?.temperature}"
+                    binding.weatherData.pressureTv.text = "Температура ${result.weather?.pressure}"
+                    binding.weatherData.sunRiseTv.text = "Восход Cолнца ${result.weather?.sunRise}"
+                    binding.weatherData.sunSetTv.text = "Заход Cолнца ${result.weather?.sunSet}"
+                    binding.weatherData.moonRiseTv.text =
+                        "Восход Луны ${result.astronomy?.moonRise}"
+                    binding.weatherData.moonSetTv.text = "Заход Луны ${result.astronomy?.moonSet}"
+                    binding.weatherData.phaseTv.text = "Фаза Луны ${result.weather?.phaseMoon}"
                     binding.errorTv.isVisible = false
                 }
                 is MainActivityState.Error -> {
-                    binding.longitudeTv.isVisible = false
-                    binding.latitudeTv.isVisible = false
-                    binding.altitudeTv.isVisible = false
-                    binding.accuracyTv.isVisible = false
-                    binding.providerTv.isVisible = false
+                    binding.locationMc.isVisible = false
+                    binding.weatherMc.isVisible = false
                     binding.errorTv.isVisible = true
                     binding.errorTv.text = result.message
                 }
@@ -79,7 +85,16 @@ class MainActivity : AppCompatActivity() {
     private fun getGpsData(viewModel: WeatherViewModel) {
         val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
         val locationListener = LocationListener { location ->
-            viewModel.getShowedData(isAccess = true, longitude = location.longitude, latitude = location.latitude)
+            location.provider?.let {
+                viewModel.getShowedData(
+                    isAccess = true,
+                    longitude = location.longitude,
+                    latitude = location.latitude,
+                    altitude = location.altitude,
+                    accuracy = location.accuracy,
+                    provider = it
+                )
+            }
         }
         if (ActivityCompat.checkSelfPermission(
                 this,
