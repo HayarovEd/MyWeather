@@ -1,4 +1,4 @@
-package com.edurda77.myweather.data
+package com.edurda77.myweather.data.mapper
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

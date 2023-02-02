@@ -12,7 +12,7 @@ class WeatherViewModel @Inject constructor(): ViewModel() {
 
 
     fun getShowedData(
-        isAccess: Boolean,
+        isAccess: Boolean = false,
         longitude: Double = 0.0,
         latitude: Double = 0.0,
         altitude: Double = 0.0,
