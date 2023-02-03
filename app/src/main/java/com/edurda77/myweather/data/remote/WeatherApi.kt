@@ -6,7 +6,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface WeatherApi {
-    @Headers("X-Yandex-API-Key: 7afdc536-f933-474b-9ded-4c57149f6336")
+    @Headers("X-Yandex-API-Key: 5f780bcf-6764-46d6-b286-24530f63838c")
     @GET("informers")
     suspend fun getCurrentWeather(
         @Query("lon") longitude : Double,
