@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                     binding.locationData.providerTv.text = "Провайдер ${result.provider}"
                     binding.weatherData.temperatureTv.text =
                         "Температура ${result.weather?.temperature}"
-                    binding.weatherData.pressureTv.text = "Температура ${result.weather?.pressure}"
+                    binding.weatherData.pressureTv.text = "Давление ${result.weather?.pressure}"
                     binding.weatherData.sunRiseTv.text = "Восход Cолнца ${result.weather?.sunRise}"
                     binding.weatherData.sunSetTv.text = "Заход Cолнца ${result.weather?.sunSet}"
                     binding.weatherData.moonRiseTv.text =
