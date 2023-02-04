@@ -11,6 +11,7 @@ interface WeatherApi {
     suspend fun getCurrentWeather(
         @Query("lon") longitude : Double,
         @Query("lat") latitude : Double,
+        @Query("lang") lang : String = "ru_RU"
     ) : WeatherDto
 
 }
