@@ -3,6 +3,7 @@ package com.edurda77.myweather.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edurda77.myweather.domain.location.Locator
 import com.edurda77.myweather.domain.repository.WeatherRepository
 import com.edurda77.myweather.domain.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,36 +12,44 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val repo: WeatherRepository) : ViewModel() {
+class WeatherViewModel @Inject constructor(
+    private val repo: WeatherRepository,
+    private val locator: Locator
+) : ViewModel() {
     private val _state = MutableLiveData<MainActivityState>(MainActivityState.Loading)
     val state = _state
 
 
-    fun getShowedData(
-        isAccess: Boolean = false,
-        longitude: Double = 0.0,
-        latitude: Double = 0.0,
-        altitude: Double = 0.0,
-        accuracy: Float = 0f,
-        provider: String = ""
-    ) {
-        if (isAccess) {
-            viewModelScope.launch {
-                val weather = async { repo.getWeather(lat = latitude, long = longitude) }
-                val moon = async { repo.getMoonData(long = longitude, lat = latitude) }
+    fun getShowedData() {
+        viewModelScope.launch {
+            locator.getLocation()?.let { currentLocation ->
+                val weather = async {
+                    repo.getWeather(
+                        lat = currentLocation.latitude,
+                        long = currentLocation.longitude
+                    )
+                }
+                val moon = async {
+                    repo.getMoonData(
+                        long = currentLocation.longitude,
+                        lat = currentLocation.latitude
+                    )
+                }
                 when (val resultWeather = weather.await()) {
                     is Resource.Success -> {
                         when (val result = moon.await()) {
                             is Resource.Success -> {
-                                _state.value = MainActivityState.SuccessLocationAndWeather(
-                                    longitude = longitude,
-                                    latitude = latitude,
-                                    altitude = altitude,
-                                    accuracy = accuracy,
-                                    provider = provider,
-                                    weather = resultWeather.data,
-                                    astronomy = result.data
-                                )
+                                _state.value = currentLocation.provider?.let {
+                                    MainActivityState.SuccessLocationAndWeather(
+                                        longitude = currentLocation.longitude,
+                                        latitude = currentLocation.latitude,
+                                        altitude = currentLocation.altitude,
+                                        accuracy = currentLocation.accuracy,
+                                        provider = it,
+                                        weather = resultWeather.data,
+                                        astronomy = result.data
+                                    )
+                                }
                             }
                             is Resource.Error -> {
                                 _state.value =
@@ -53,10 +62,11 @@ class WeatherViewModel @Inject constructor(private val repo: WeatherRepository) 
                             MainActivityState.Error(resultWeather.message ?: "An unknown error")
                     }
                 }
-
+            } ?: kotlin.run {
+                _state.value = MainActivityState.Error("Доступ сначала дай!!!")
             }
-        } else {
-            _state.value = MainActivityState.Error("Доступ сначала дай!!!")
+
+
         }
     }
 

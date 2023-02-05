@@ -15,7 +15,7 @@
         android:layout_marginTop="4dp"
         android:textSize="60sp"
         android:background="@android:color/transparent"
-        android:format24Hour="hh:mm:ss"
+        android:format24Hour="kk:mm:ss"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.google.android.material.card.MaterialCardView
@@ -57,6 +57,16 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/errorTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/clock"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
